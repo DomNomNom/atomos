@@ -7,7 +7,7 @@
 Environment::Environment(int capacity) : molecules(capacity) { }
 
 const Fitting& Environment::getNewFitting() {
-    Fitting newFitting(*this);
+    Fitting newFitting(this);
     fittings.push_back(newFitting);
     recalculateFittingIndecies();
     return fittings.back();

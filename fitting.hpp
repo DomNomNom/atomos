@@ -9,8 +9,14 @@ class Pipe;
 
 class Fitting {
 public:
-    Fitting(Volume &volume_) : pipe(nullptr), volume(volume_){};
+    Fitting(Volume *volume_) : pipe(nullptr), volume(volume_){}
     ~Fitting();
+    Fitting(const Fitting& f) :pipe(f.pipe), volume(f.volume){}
+    Fitting& operator=(const Fitting& f){
+        this->pipe = f.pipe;
+        this->volume = f.volume;
+        return *this;
+    }
 
     virtual Molecule_ptr& getSlotToSwap();
 
@@ -19,7 +25,7 @@ public:
     Pipe *pipe;
 private:
 
-    Volume &volume;
+    Volume *volume;
 
     // friend Pipe;
 };
