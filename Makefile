@@ -8,7 +8,7 @@ all: $(BUILD)atomos
 
 $(BUILD)atomos: $(OBJ)
 	@echo producing final executable $(BUILD)atomos
-	$(CC) main.cpp -o $@ $< $(LDFLAGS)
+	$(CC) main.cpp -o $@ $< $(CFLAGS) $(LDFLAGS)
 	@echo
 	@echo final executable can be found at $(BUILD)atomos
 
