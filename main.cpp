@@ -68,6 +68,13 @@ void keyHandler(unsigned char key, int, int) {
     }
 }
 
+void printVolume(unsigned x, unsigned y) {
+    std::vector<Molecule_ptr> &mols = volumes.at(y * simulation_wd + x)->molecules;
+    for (const Molecule_ptr &mol : mols) {
+        printf((mol)? "1" : "0");
+    }
+    printf("\n");
+}
 
 // the body of the main loop
 void tick() {
@@ -78,7 +85,7 @@ void tick() {
     Atomos::getInstance().tick();  // where the magic happens
 
 
-    // TODO: interpret the volumes as a pixel grid
+    // interpret the volumes as a pixel grid
     for (int y=0; y<simulation_ht; ++y){
         for (int x=0; x<simulation_wd; ++x) {
             int index = y * simulation_wd + x;
@@ -94,8 +101,10 @@ void tick() {
             // black if completely empty
             pixelData[4 * index] = (molCount * 255) / mols.size();
         }
-
     }
+
+    // do a debug print of the initially filled volume
+    printVolume(1,1);
 
 
     // draw the pixel data
@@ -112,7 +121,7 @@ int main(int argc, char** argv) {
     // create the atmos grid
     for (int y=0; y<simulation_ht; ++y) {
         for (int x=0; x<simulation_wd; ++x) {
-            Environment *newEnv = new Environment(255);
+            Environment *newEnv = new Environment(100);
             volumes.push_back(newEnv);
 
             // add connections to existing volumes in a grid
@@ -150,7 +159,7 @@ int main(int argc, char** argv) {
     glutKeyboardFunc(keyHandler);
     // glutMouseFunc(mouseHandler);
 
-    //
+
     glutMainLoop();
 
     return 0;

@@ -31,7 +31,7 @@ Pipe::~Pipe() {
 
 void Pipe::swapMolecules() {
     checkFittings();
-    // TODO
+    A->getSlotToSwap().swap(B->getSlotToSwap());
 }
 
 void Pipe::checkFittings() {
