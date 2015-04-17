@@ -29,7 +29,6 @@ void reshapeHandler(int wd, int ht) {
         (float)window_wd / simulation_wd,
         (float)window_ht / simulation_ht
     );
-
 }
 
 

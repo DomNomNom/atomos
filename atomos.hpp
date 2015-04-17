@@ -46,5 +46,5 @@ private:
     unsigned currentTick = 0;
 
     std::unordered_set<Pipe*> allPipes;
-    friend Pipe;  // borders add themselves to this list
+    friend Pipe;  // pipes add themselves to this list
 };
