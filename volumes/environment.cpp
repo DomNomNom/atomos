@@ -1,5 +1,6 @@
 
 #include "environment.hpp"
+#include "../atomos.hpp"
 
 #include <cstdlib>  // rand()
 
