@@ -1,4 +1,4 @@
-CC = g++
+CC = clang++
 
 LIBS = -lm -lGL -lglut -lGLU
 LDFLAGS = ${LIBS}
