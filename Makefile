@@ -13,6 +13,7 @@ $(BUILD)atomos: $(OBJ)
 	@echo finaly executable can be found at $(BUILD)atomos
 
 $(BUILD)%.o: %.cpp
+	@mkdir -p `dirname $(BUILD)$<`
 	@echo compiling $<
 	$(CC) -g -c $(CFLAGS) $< -o $@
 	@echo
