@@ -4,6 +4,7 @@
 #include <GL/glut.h>
 
 #include "atomos.hpp"
+#include "volumes/environment.hpp"
 
 GLuint window;
 int window_wd = 300;
@@ -62,8 +63,8 @@ void tick() {
 }
 
 int main(int argc, char** argv) {
-    // time_init();
 
+    Environment A(3);
     // Atomos atomos;
     // Volume_ptr vol = atomos.createVolume(6);
     // printf("vol? %d\n", vol->capacity());

@@ -1,7 +1,7 @@
 #include <vector>
 
-#include "Volume.hpp"
-#include "molecule.hpp"
+#include "volume.hpp"
+#include "../molecule.hpp"
 
 
 // has a finite capacity
@@ -9,13 +9,14 @@
 class Environment : Volume {
 public:
     std::vector<Molecule_ptr> molecules;
-    Environment(){};
+    Environment(int capacity);
+
 
     Fitting& getNewFitting();
 
     virtual Molecule_ptr& getSlot(unsigned fittingIndex);  // should only be called from fitting
 
 private:
-    std::vector<Fitting> fittings:
+    std::vector<Fitting> fittings;
     void recalculateFittingIndecies();
 };
