@@ -24,7 +24,6 @@ Pipe::~Pipe() {
     assert (allPipes.find(this) != allPipes.end());  // we should be in the set of allPipes
     allPipes.erase(this);
 
-    printf("~Pipe %lu\n", allPipes.size());
     A->disconnect();
     B->disconnect();
 }

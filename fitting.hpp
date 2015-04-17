@@ -29,7 +29,6 @@ public:
 
         // notify our volume that we are disconnected
         volume->removeFitting(index); //
-        printf("fitting disconnected\n");
     }
 
 private:

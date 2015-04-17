@@ -40,7 +40,7 @@ void reshapeHandler(int wd, int ht) {
 
 void cleanUp() {
 
-    printf("starting to clean up\n");
+    printf("starting clean up\n");
 
     glutDestroyWindow(window);
 
@@ -53,7 +53,7 @@ void cleanUp() {
         delete e;
     }
     volumes.clear();
-    printf("cleaned up before exiting\n");
+    printf("finished clean up\n");
 }
 
 
@@ -79,9 +79,22 @@ void tick() {
 
 
     // TODO: interpret the volumes as a pixel grid
-    int y = simulation_ht / 2;
-    for (int x=0; x<simulation_wd; ++x) {
-        pixelData[4 * (y * simulation_wd + x)] = ((frameCount + x) % simulation_wd == 0) ? 0 : 255;
+    for (int y=0; y<simulation_ht; ++y){
+        for (int x=0; x<simulation_wd; ++x) {
+            int index = y * simulation_wd + x;
+            std::vector<Molecule_ptr> &mols = volumes.at(y * simulation_wd + x)->molecules;
+            unsigned molCount = 0;
+            for (const Molecule_ptr &mol : mols) {
+                if (mol) {
+                    molCount += 1;
+                }
+            }
+
+            // red if completely full
+            // black if completely empty
+            pixelData[4 * index] = (molCount * 255) / mols.size();
+        }
+
     }
 
 
@@ -119,8 +132,11 @@ int main(int argc, char** argv) {
         }
     }
 
-    // fill a cell with atoms
-    // TODO
+    // fill a cell to its capacity
+    Environment *toFill = volumes.at(1 + 1*simulation_wd); // x=1 y=1
+    for (unsigned i=0; i < toFill->molecules.size(); ++i) {
+        toFill->molecules.at(i).reset(new Molecule(1337));
+    }
 
 
     // set up the window

@@ -4,7 +4,6 @@
 #include <assert.h>
 
 Fitting::~Fitting() {
-    printf("~Fitting\n");
     // all pipes must be disconnected (destroyed) before a volume and its fittings are destroyed
     assert (pipe == nullptr);
 }
