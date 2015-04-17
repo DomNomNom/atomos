@@ -41,8 +41,8 @@ private:
     Atomos();
 
     // forbid copying
-    Atomos(Atomos const&)          = delete;
-    void operator=(Atomos const&)  = delete;
+    Atomos(Atomos const&);
+    void operator=(Atomos const&);
 
     unsigned currentTick;
 
