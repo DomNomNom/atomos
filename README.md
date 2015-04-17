@@ -1,2 +1,2 @@
 # Atomos
-A atomic atmos simulator
+An atomic atmos simulator
