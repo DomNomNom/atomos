@@ -55,7 +55,7 @@ Molecule_ptr& Environment::getSlot(unsigned fittingIndex) {
     // regular slice size
     unsigned sliceSize = molecules.size() / fittings.size();  // note: integer division
 
-    unsigned sliceOffset = fittingIndex * sliceSize; // beginning index of this slice
+    unsigned sliceOffset = slice * sliceSize; // beginning index of this slice
 
     // make last one longer
     // note that now sliceSize represents only the size of this slice
