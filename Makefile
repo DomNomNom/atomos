@@ -7,10 +7,10 @@ OBJ = $(patsubst %.cpp, $(BUILD)%.o, $(SRC))
 all: $(BUILD)atomos
 
 $(BUILD)atomos: $(OBJ)
-	@echo production final executable $(BUILD)atomos
+	@echo producing final executable $(BUILD)atomos
 	$(CC) main.cpp -o $@ $< $(LDFLAGS)
 	@echo
-	@echo finaly executable can be found at $(BUILD)atomos
+	@echo final executable can be found at $(BUILD)atomos
 
 $(BUILD)%.o: %.cpp
 	@mkdir -p `dirname $(BUILD)$<`
