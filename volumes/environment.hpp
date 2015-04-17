@@ -15,7 +15,7 @@ public:
     Environment(int capacity);
 
 
-    Fitting& getNewFitting();
+    const Fitting& getNewFitting();
 
     virtual Molecule_ptr& getSlot(unsigned fittingIndex);  // should only be called from fitting
 

@@ -6,10 +6,10 @@
 
 Environment::Environment(int capacity) : molecules(capacity) { }
 
-Fitting& Environment::getNewFitting() {
+const Fitting& Environment::getNewFitting() {
     fittings.push_back(Fitting(*this));
     recalculateFittingIndecies();
-    return fittings.back;
+    return fittings.back();
 }
 
 // this should be called any time the fittings vector is modified
