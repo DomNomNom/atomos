@@ -1,10 +1,9 @@
-#include "volume.hpp"
+
+#include "environment.hpp"
 
 #include <cstdlib>  // rand()
 
 Environment::Environment(int capacity) : molecules(capacity) { }
-
-Environment::~Environment() { }
 
 Fitting& Environment::getNewFitting() {
     fittings.push_back(Fitting(*this));
@@ -16,7 +15,7 @@ Fitting& Environment::getNewFitting() {
 void Environment::recalculateFittingIndecies() {
     // ensure that each fitting has a unique index in the range
     // 0 .. fittings.size()-1
-    for (int i=0; i<fittings.size(); ++i) {
+    for (unsigned i=0; i<fittings.size(); ++i) {
         fittings.at(i).index = i;
     }
 }

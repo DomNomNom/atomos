@@ -4,6 +4,7 @@
 
 #include "volume.hpp"
 #include "../molecule.hpp"
+#include "../fitting.hpp"
 
 
 // has a finite capacity

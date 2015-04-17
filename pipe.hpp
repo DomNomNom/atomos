@@ -6,8 +6,8 @@
 // Allows molecules to pass from one Fitting to another
 class Pipe {
 public:
-    const Fitting& A;
-    const Fitting& B;
+    Fitting& A;
+    Fitting& B;
 
     Pipe(Fitting &a, Fitting &b);
     ~Pipe();
