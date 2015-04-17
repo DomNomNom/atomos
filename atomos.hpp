@@ -33,18 +33,17 @@ public:
     // a counter of how often tick() has been called
     unsigned getCurrentTick() { return currentTick; }
 
+    std::unordered_set<Pipe*> allPipes;
+    // friend Pipe;  // pipes add themselves to this list
 private:
     // std::unordered_set<Volume_ptr> volumes;
 
-    Atomos(){};
-    ~Atomos(){};
+    Atomos();
 
     // forbid copying
     Atomos(Atomos const&)          = delete;
     void operator=(Atomos const&)  = delete;
 
-    unsigned currentTick = 0;
+    unsigned currentTick;
 
-    std::unordered_set<Pipe*> allPipes;
-    friend Pipe;  // pipes add themselves to this list
 };

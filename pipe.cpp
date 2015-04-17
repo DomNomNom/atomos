@@ -10,8 +10,8 @@ Pipe::Pipe(Fitting &a, Fitting &b) : A(a), B(b) {
 
     // TODO: tell A and B to be attached to this
     A.pipe = this;
-    B.pipe = this;
-};
+    A.pipe = this;
+}
 
 Pipe::~Pipe() {
     checkFittings();
@@ -24,11 +24,13 @@ Pipe::~Pipe() {
     B.pipe = nullptr;
 }
 
-Pipe::checkFittings() {
-    assert (A.pipe == this);
-    assert (B.pipe == this);
-}
 
 void Pipe::swapMolecules() {
     checkFittings();
+    // TODO
+}
+
+void Pipe::checkFittings() {
+    assert (A.pipe == this);
+    assert (B.pipe == this);
 }
