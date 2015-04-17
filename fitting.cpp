@@ -11,6 +11,6 @@ Fitting::~Fitting() {
 }
 
 Molecule_ptr& Fitting::getSlotToSwap() {
-    // return volume.getSlot(index);
-    return nullptr;
+    return volume.getSlot(index);
+    // return nullptr;
 }

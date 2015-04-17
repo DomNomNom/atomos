@@ -1,6 +1,6 @@
 #pragma once
 
-#include "molecule.hpp"
+#include "../molecule.hpp"
 
 // a container for molecules
 // a volume may have a fixed or varying amount of fittings
