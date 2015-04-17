@@ -2,18 +2,24 @@
 
 #include <stdio.h>
 #include <GL/glut.h>
+#include <vector>
 
 #include "atomos.hpp"
 #include "volumes/environment.hpp"
+#include "pipe.hpp"
 
 GLuint window;
 int window_wd = 300;
 int window_ht = 300;
 uint frameCount = 0;
 
-const int simulation_wd = 100;
-const int simulation_ht = 100;
-GLubyte pixelData[simulation_ht * simulation_wd * 3];
+const int simulation_wd = 5;
+const int simulation_ht = 5;
+GLubyte pixelData[simulation_ht * simulation_wd * 4];
+
+std::vector<Environment*> volumes;
+std::vector<Pipe*> pipes;
+
 
 // void mouseHandler(int, int state, int, int) {
 //     if (state == GLUT_DOWN) {
@@ -32,14 +38,33 @@ void reshapeHandler(int wd, int ht) {
 }
 
 
+void cleanUp() {
+
+    printf("starting to clean up\n");
+
+    glutDestroyWindow(window);
+
+    // note: delete pipes before volumes
+    for (Pipe* p : pipes) {
+        delete p;
+    }
+    pipes.clear();
+    for (Environment* e : volumes) {
+        delete e;
+    }
+    volumes.clear();
+    printf("cleaned up before exiting\n");
+}
+
+
 // Input
 void keyHandler(unsigned char key, int, int) {
     switch (key) {
         case 27: // Escape -> exit
         case 'q':
-            glutDestroyWindow(window);
+            cleanUp();
             exit (0);
-            break;
+            break; // lol
     }
 }
 
@@ -49,39 +74,67 @@ void tick() {
     frameCount += 1;
     // printf("frame %d\n", frameCount);
 
+
+    Atomos::getInstance().tick();  // where the magic happens
+
+
+    // TODO: interpret the volumes as a pixel grid
     int y = simulation_ht / 2;
     for (int x=0; x<simulation_wd; ++x) {
-        pixelData[3 * (y * simulation_wd + x)] = ((frameCount + x) % simulation_wd == 0) ? 0 : 255;
+        pixelData[4 * (y * simulation_wd + x)] = ((frameCount + x) % simulation_wd == 0) ? 0 : 255;
     }
 
+
+    // draw the pixel data
     // we are using old openGL but this is quick, simple and dirty
     glClear(GL_COLOR_BUFFER_BIT);
-    glDrawPixels(simulation_wd, simulation_ht, GL_RGB, GL_UNSIGNED_BYTE, pixelData);
+    glDrawPixels(simulation_wd, simulation_ht, GL_RGBA, GL_UNSIGNED_BYTE, pixelData);
     glutSwapBuffers();
     glutPostRedisplay();  // active rendering
 }
 
 int main(int argc, char** argv) {
-
-    Environment A(3);
-    // Atomos atomos;
-    // Volume_ptr vol = atomos.createVolume(6);
-    // printf("vol? %d\n", vol->capacity());
-    // printf("isnull? %d\n", vol.);
-
     printf("hello world\n");
+
+    // create the atmos grid
+    for (int y=0; y<simulation_ht; ++y) {
+        for (int x=0; x<simulation_wd; ++x) {
+            Environment *newEnv = new Environment(255);
+            volumes.push_back(newEnv);
+
+            // add connections to existing volumes in a grid
+            if (x > 0) { // horizontal
+                pipes.push_back(new Pipe(
+                    newEnv->getNewFitting(),
+                    volumes.at(y*simulation_wd + x-1)->getNewFitting()
+                ));
+            }
+            if (y > 0) {  // vertical
+                pipes.push_back(new Pipe(
+                    newEnv->getNewFitting(),
+                    volumes.at((y-1)*simulation_wd + x)->getNewFitting()
+                ));
+            }
+
+        }
+    }
+
+    // fill a cell with atoms
+    // TODO
+
+
+    // set up the window
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(window_wd, window_ht);
     window = glutCreateWindow("atomos");
-
     glutDisplayFunc(tick);
     glutReshapeFunc(reshapeHandler);
     // glutIdleFunc(AnimateScene);
     glutKeyboardFunc(keyHandler);
     // glutMouseFunc(mouseHandler);
 
-
+    //
     glutMainLoop();
 
     return 0;

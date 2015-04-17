@@ -13,13 +13,17 @@ class Environment : Volume {
 public:
     std::vector<Molecule_ptr> molecules;
     Environment(int capacity);
+    ~Environment();
 
 
-    const Fitting& getNewFitting();
+    const Fitting_ptr& getNewFitting();
 
-    virtual Molecule_ptr& getSlot(unsigned fittingIndex);  // should only be called from fitting
+    // the next two should only be called from fitting
+    Molecule_ptr& getSlot(unsigned fittingIndex);
+    void removeFitting(unsigned fittingIndex);
+
 
 private:
-    std::vector<Fitting> fittings;
+    std::vector<Fitting_ptr> fittings;
     void recalculateFittingIndecies();
 };

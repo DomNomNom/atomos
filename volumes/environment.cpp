@@ -3,24 +3,34 @@
 #include "../atomos.hpp"
 
 #include <cstdlib>  // rand()
+#include <stdio.h>
+#include <assert.h>
 
 Environment::Environment(int capacity) : molecules(capacity) { }
 
-const Fitting& Environment::getNewFitting() {
-    Fitting newFitting(this);
-    fittings.push_back(newFitting);
+
+Environment::~Environment() {
+    for (const Fitting_ptr& f : fittings) {
+        assert (f->getPipe() == nullptr);  // all pipes must be destroyed prior to our deletion
+    }
+}
+
+const Fitting_ptr& Environment::getNewFitting() {
+    fittings.push_back(Fitting_ptr(new Fitting(this)));
     recalculateFittingIndecies();
     return fittings.back();
 }
+
 
 // this should be called any time the fittings vector is modified
 void Environment::recalculateFittingIndecies() {
     // ensure that each fitting has a unique index in the range
     // 0 .. fittings.size()-1
     for (unsigned i=0; i<fittings.size(); ++i) {
-        fittings.at(i).index = i;
+        fittings.at(i)->index = i;
     }
 }
+
 
 Molecule_ptr& Environment::getSlot(unsigned fittingIndex) {
 
@@ -57,4 +67,11 @@ Molecule_ptr& Environment::getSlot(unsigned fittingIndex) {
     unsigned sliceElement = std::rand() % sliceSize; // which index withinin the slice
 
     return molecules.at(sliceOffset + sliceElement);
+}
+
+void Environment::removeFitting(unsigned fittingIndex) {
+    // remove the pointer
+    fittings.erase(fittings.begin() + fittingIndex);
+
+    recalculateFittingIndecies(); // updare indecies
 }

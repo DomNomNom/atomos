@@ -20,10 +20,9 @@ and the flow of molecules between volumes any time tick() is called.
 class Atomos {
 public:
     // this is a singleton
-    static Atomos& getInstance()
-    {
-        static Atomos instance; // Guaranteed to be destroyed.
-                                // Instantiated on first use.
+    static Atomos& getInstance() {
+        // Guaranteed to be destroyed. Instantiated on first use.
+        static Atomos instance;
         return instance;
     }
 
@@ -33,7 +32,7 @@ public:
     // a counter of how often tick() has been called
     unsigned getCurrentTick() { return currentTick; }
 
-    std::unordered_set<Pipe*> allPipes;
+    std::unordered_set<Pipe *> allPipes;
     // friend Pipe;  // pipes add themselves to this list
 private:
     // std::unordered_set<Volume_ptr> volumes;

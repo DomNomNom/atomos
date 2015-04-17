@@ -6,10 +6,10 @@
 // Allows molecules to pass from one Fitting to another
 class Pipe {
 public:
-    Fitting& A;
-    Fitting& B;
+    std::shared_ptr<Fitting> A;
+    std::shared_ptr<Fitting> B;
 
-    Pipe(Fitting &a, Fitting &b);
+    Pipe(const Fitting_ptr &a, const Fitting_ptr &b);
     ~Pipe();
 
     void swapMolecules(); // should only be called by atomos
@@ -17,4 +17,3 @@ public:
 private:
     void checkFittings();  // checks whether our fittings to point to us
 };
-

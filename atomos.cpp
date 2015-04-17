@@ -4,8 +4,8 @@
 
 
 
-Atomos::Atomos() {
-    currentTick = 0;
+Atomos::Atomos() : currentTick(0) {
+    printf("atomos created.\n");
 }
 // Volume_ptr Atomos::createVolume(int capacity) {
 //     Volume_ptr out(new Volume(capacity));
@@ -15,6 +15,6 @@ Atomos::Atomos() {
 
 
 void Atomos::tick() {
-    printf("tick tock %d\n", getCurrentTick());
+    // printf("tick tock %d\n", getCurrentTick());
     currentTick += 1;
 }
