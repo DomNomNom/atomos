@@ -1,23 +1,21 @@
-CC = clang++
-CFLAGS = -g -std=c++0x -Wall -Wextra -pedantic
-IPATH = -I/usr/X11/include -I/usr/pkg/include -I./include
-LPATH = -L/usr/X11/lib -L/usr/pkg/lib
-LDPATH = -Wl,-R/usr/pkg/lib
+include config.mk
 
 BUILD = ./build/
-SRC = ./
+SRC = $(shell find . -name '*.cpp' | grep -v main.cpp)
+OBJ = $(patsubst %.cpp, $(BUILD)%.o, $(SRC))
 
 all: $(BUILD)atomos
 
+$(BUILD)atomos: $(OBJ)
+	@echo production final executable $(BUILD)atomos
+	$(CC) main.cpp -o $@ $< $(LDFLAGS)
 
-$(BUILD)atomos: $(BUILD)main.o $(BUILD)fitting.o $(BUILD)atomos.o
-	$(CC) -o $@ $^ -lm -lGL -lglut -lGLU $(LPATH) $(LDPATH)
-
-
-$(BUILD)%.o: $(SRC)%.cpp
-	$(CC) $(CFLAGS) -c -o $@ $^ $(IPATH)
+$(BUILD)%.o: %.cpp
+	@echo compiling $<
+	$(CC) -g -c $(CFLAGS) $< -o $@
 
 clean:
-	$(RM) -f $(BUILD)*.o $(BUILD)*.gch $(BUILD)atomos
-
+	$(RM) -f $(shell find . -iname '*.o')
+	$(RM) -f $(shell find . -iname '*.gch')
+	$(RM) -f $(BUILD)atomos
 
