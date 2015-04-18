@@ -22,8 +22,16 @@ public:
     Molecule_ptr& getSlot(unsigned fittingIndex);
     void removeFitting(unsigned fittingIndex);
 
+    // whether we are appliccable for debug output
+    // TODO: remove me
+    bool isSpecial = false;
 
 private:
     std::vector<Fitting_ptr> fittings;
     void recalculateFittingIndecies();
+
+    // a random number shared by all fittings. updated each tick.
+    unsigned sliceRngResult = 0;
+    unsigned lastRngTick = 0;
+    unsigned getSliceRngResult();
 };

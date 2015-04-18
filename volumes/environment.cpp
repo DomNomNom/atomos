@@ -6,7 +6,10 @@
 #include <stdio.h>
 #include <assert.h>
 
-Environment::Environment(int capacity) : molecules(capacity) { }
+
+Environment::Environment(int capacity) : molecules(capacity) {
+    sliceRngResult = rand();
+}
 
 
 Environment::~Environment() {
@@ -17,6 +20,10 @@ Environment::~Environment() {
 
 const Fitting_ptr& Environment::getNewFitting() {
     fittings.push_back(Fitting_ptr(new Fitting(this)));
+
+    // we can't slice molucules into more slices than its size. Pidgin hole principle
+    assert (fittings.size() <= molecules.size());
+
     recalculateFittingIndecies();
     return fittings.back();
 }
@@ -43,14 +50,25 @@ Molecule_ptr& Environment::getSlot(unsigned fittingIndex) {
     == == ====
 
     we then
-        pick a slice determined by fittingIndex and rotated each atmos tick
+        pick a random slice such that no two fittings use the same slice
         return a random element within that slice
     */
 
+    unsigned currentTick = Atomos::getInstance().getCurrentTick();
+    if (lastRngTick != currentTick) {
+        sliceRngResult = std::rand();  // done once per environment per tick
+        lastRngTick = currentTick;
+    }
+
     unsigned slice = (
         fittingIndex +
-        Atomos::getInstance().getCurrentTick()  // this makes it cycle over time
+        sliceRngResult
+        // + std::rand()
     ) % fittings.size();
+
+    if (isSpecial) {
+        printf("%d  ", slice);
+    }
 
     // regular slice size
     unsigned sliceSize = molecules.size() / fittings.size();  // note: integer division

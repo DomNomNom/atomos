@@ -10,6 +10,8 @@
 #include "pipe.hpp"
 #include "time.hpp"
 
+bool enableTimingPrintouts = false;
+
 GLuint window;
 int window_wd = 300;
 int window_ht = 300;
@@ -30,21 +32,6 @@ std::vector<Pipe*> pipes;
 //     // glutPostRedisplay();
 // }
 
-void reshapeHandler(int wd, int ht) {
-    window_wd = wd;
-    window_ht = ht;
-    float scale = std::min(
-        (float)window_wd / simulation_wd,
-        (float)window_ht / simulation_ht
-    );
-    glPixelZoom(scale, scale);
-}
-
-// prints something identifyable and the time in miliseconds since the last call of this function
-void doTiming(const char *description) {
-    printf("[ %s: %5.1fms ]        ", description, time_dt()*1000.0);
-}
-
 void cleanUp() {
 
     printf("starting clean up\n");
@@ -63,6 +50,15 @@ void cleanUp() {
     printf("finished clean up\n");
 }
 
+void reshapeHandler(int wd, int ht) {
+    window_wd = wd;
+    window_ht = ht;
+    float scale = std::min(
+        (float)window_wd / simulation_wd,
+        (float)window_ht / simulation_ht
+    );
+    glPixelZoom(scale, scale);
+}
 
 // Input
 void keyHandler(unsigned char key, int, int) {
@@ -72,6 +68,16 @@ void keyHandler(unsigned char key, int, int) {
             cleanUp();
             exit (0);
             break; // lol
+    }
+}
+
+
+
+
+// prints something identifyable and the time in miliseconds since the last call of this function
+void doTiming(const char *description) {
+    if (enableTimingPrintouts) {
+        printf("[ %s: %5.1fms ]        ", description, time_dt()*1000.0);
     }
 }
 
@@ -85,6 +91,7 @@ void printVolume(unsigned x, unsigned y) {
     }
     printf("\n");
 }
+
 
 // the body of the main loop
 void tick() {
@@ -122,7 +129,7 @@ void tick() {
 
 
     // do a debug print of the one volume
-    // printVolume(simulation_wd*0.5, simulation_ht*0.5);
+    printVolume(simulation_wd*0.5, simulation_ht*0.5);
 
 
     // draw the pixel data
@@ -134,7 +141,9 @@ void tick() {
     glutPostRedisplay();  // active rendering
 
     doTiming("draw");
-    printf("\n");
+    if (enableTimingPrintouts) {
+        printf("\n");
+    }
 }
 
 int main(int argc, char** argv) {
@@ -145,7 +154,7 @@ int main(int argc, char** argv) {
     // create the atmos grid
     for (int y=0; y<simulation_ht; ++y) {
         for (int x=0; x<simulation_wd; ++x) {
-            Environment *newEnv = new Environment(11);
+            Environment *newEnv = new Environment(4);
             volumes.push_back(newEnv);
 
             // add connections to existing volumes in a grid
@@ -164,6 +173,8 @@ int main(int argc, char** argv) {
 
         }
     }
+
+    volumes.at((simulation_ht/2) * simulation_wd + simulation_wd/2)->isSpecial = true;
 
     doTiming("graph creation");
 
