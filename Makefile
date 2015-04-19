@@ -7,6 +7,7 @@ OBJ = $(patsubst %.cpp, $(BUILD)%.o, $(SRC))
 all: $(BUILD)atomos
 
 $(BUILD)atomos: $(OBJ)
+	@mkdir -p $(BUILD)
 	@echo producing final executable $(BUILD)atomos
 	@echo ${OBJ}
 	$(CC) main.cpp -o $@ $(CFLAGS) $(LDFLAGS) ${OBJ}
@@ -20,7 +21,5 @@ $(BUILD)%.o: %.cpp
 	@echo
 
 clean:
-	$(RM) -f $(shell find . -iname '*.o')
-	$(RM) -f $(shell find . -iname '*.gch')
-	$(RM) -f $(BUILD)atomos
+	$(RM) -rf $(BUILD)
 
