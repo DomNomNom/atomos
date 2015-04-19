@@ -23,3 +23,7 @@ $(BUILD)%.o: %.cpp
 clean:
 	$(RM) -rf $(BUILD)
 
+run: $(BUILD)atomos
+	./$(BUILD)atomos
+
+
