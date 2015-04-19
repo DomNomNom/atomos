@@ -20,9 +20,11 @@ $(BUILD)%.o: %.cpp
 	@echo
 
 clean:
+	@echo cleaning
 	$(RM) -rf $(BUILD)
+	@echo
 
-run: $(BUILD)atomos
+run: clean $(BUILD)atomos
 	./$(BUILD)atomos
 
 
