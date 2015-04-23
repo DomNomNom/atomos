@@ -1,40 +1,56 @@
 #include "pipe.hpp"
 #include "atomos.hpp"
 
+#include "volumes/volume.hpp"
+
 #include <assert.h>
 #include <stdio.h>
 
-Pipe::Pipe(const Fitting_ptr &a, const Fitting_ptr &b) : A(a), B(b) {
+Pipe::Pipe() {
+
     auto &allPipes = Atomos::getInstance().allPipes;
     assert (allPipes.find(this) == allPipes.end());  // we should not be in the set of allPipes
     allPipes.insert(this);
     assert (allPipes.find(this) != allPipes.end());  // we should be in the set of allPipes
 
-    // TODO: tell A and B to be attached to this
-    A->connect(this);
-    B->connect(this);
+    // // TODO: tell A and B to be attached to this
+    // A->connect(this);
+    // B->connect(this);
 
-    checkFittings();
+    // assert (A.volume != nullptr);
+    // assert (B.volume != nullptr);
+    A.volume = nullptr;
+    B.volume = nullptr;
+
+    // checkConnections();
 }
 
 Pipe::~Pipe() {
-    checkFittings();
+    checkConnections();
 
     auto &allPipes = Atomos::getInstance().allPipes;
     assert (allPipes.find(this) != allPipes.end());  // we should be in the set of allPipes
     allPipes.erase(this);
 
-    A->disconnect();
-    B->disconnect();
+    A.volume->release(A.connectionIndex);
+    B.volume->release(B.connectionIndex);
+
+    // make sure the volumes have done their job
+    assert (A.volume == nullptr);
+    assert (B.volume == nullptr);
 }
 
 
 void Pipe::swapMolecules() {
-    checkFittings();
-    A->getSlotToSwap().swap(B->getSlotToSwap());
+    checkConnections();
+    A.volume->getSlot(A.connectionIndex).swap(
+        B.volume->getSlot(B.connectionIndex)
+    );
 }
 
-void Pipe::checkFittings() {
-    assert (A->getPipe() == this);
-    assert (B->getPipe() == this);
+void Pipe::checkConnections() {
+    assert (A.volume != nullptr);
+    assert (B.volume != nullptr);
+    assert (A.volume->getConnectionInfo(A.connectionIndex) == &A);
+    assert (B.volume->getConnectionInfo(B.connectionIndex) == &B);
 }

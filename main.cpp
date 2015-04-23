@@ -20,7 +20,6 @@ uint frameCount = 0;
 const int simulation_wd = 100;
 const int simulation_ht = 100;
 GLubyte pixelData[simulation_ht * simulation_wd * 4];
-
 std::vector<Environment*> volumes;
 std::vector<Pipe*> pipes;
 
@@ -121,7 +120,10 @@ void tick() {
 
             // red if completely full
             // black if completely empty
-            pixelData[4 * index] = (molCount * 255) / mols.size();
+            pixelData[4 * index] = (
+                1.0 * (molCount * 255) / mols.size() +
+                0.0 * pixelData[4 * index]
+            );
         }
     }
 
@@ -154,21 +156,23 @@ int main(int argc, char** argv) {
     // create the atmos grid
     for (int y=0; y<simulation_ht; ++y) {
         for (int x=0; x<simulation_wd; ++x) {
-            Environment *newEnv = new Environment(4);
+            Environment *newEnv = new Environment(8);
             volumes.push_back(newEnv);
 
             // add connections to existing volumes in a grid
             if (x > 0) { // horizontal
-                pipes.push_back(new Pipe(
-                    newEnv->getNewFitting(),
-                    volumes.at(y*simulation_wd + x-1)->getNewFitting()
-                ));
+                Pipe* p = new Pipe();
+                newEnv->takeControlOf(&p->A),
+                volumes.at(y*simulation_wd + x-1)->takeControlOf(&p->B),
+                p->checkConnections();
+                pipes.push_back(p);
             }
             if (y > 0) {  // vertical
-                pipes.push_back(new Pipe(
-                    newEnv->getNewFitting(),
-                    volumes.at((y-1)*simulation_wd + x)->getNewFitting()
-                ));
+                Pipe* p = new Pipe();
+                newEnv->takeControlOf(&p->A);
+                volumes.at((y-1)*simulation_wd + x)->takeControlOf(&p->B);
+                p->checkConnections();
+                pipes.push_back(p);
             }
 
         }

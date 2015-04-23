@@ -13,33 +13,24 @@ Environment::Environment(int capacity) : molecules(capacity) {
 
 
 Environment::~Environment() {
-    for (const Fitting_ptr& f : fittings) {
-        assert (f->getPipe() == nullptr);  // all pipes must be destroyed prior to our deletion
-    }
+    assert (connections.empty());  // all pipes must be destroyed prior to our deletion
 }
 
-const Fitting_ptr& Environment::getNewFitting() {
-    fittings.push_back(Fitting_ptr(new Fitting(this)));
-
-    // we can't slice molucules into more slices than its size. Pidgin hole principle
-    assert (fittings.size() <= molecules.size());
-
-    recalculateFittingIndecies();
-    return fittings.back();
-}
 
 
 // this should be called any time the fittings vector is modified
-void Environment::recalculateFittingIndecies() {
+void Environment::recalculateConnectionIndecies() {
     // ensure that each fitting has a unique index in the range
     // 0 .. fittings.size()-1
-    for (unsigned i=0; i<fittings.size(); ++i) {
-        fittings.at(i)->index = i;
+    for (unsigned i=0; i<connections.size(); ++i) {
+        ConnectionInfo *info = connections.at(i);
+        assert (info->volume == this);
+        info->connectionIndex = i;
     }
 }
 
 
-Molecule_ptr& Environment::getSlot(unsigned fittingIndex) {
+Molecule_ptr& Environment::getSlot(unsigned connectionIndex) {
 
     /*
     there are as many slices as fittings.
@@ -61,21 +52,21 @@ Molecule_ptr& Environment::getSlot(unsigned fittingIndex) {
     }
 
     unsigned slice = (
-        fittingIndex +
+        connectionIndex +
         sliceRngResult
         // + std::rand()
-    ) % fittings.size();
+    ) % connections.size();
 
     // regular slice size
-    unsigned sliceSize = molecules.size() / fittings.size();  // note: integer division
+    unsigned sliceSize = molecules.size() / connections.size();  // note: integer division
 
     unsigned sliceOffset = slice * sliceSize; // beginning index of this slice
 
     // make last one longer
     // note that now sliceSize represents only the size of this slice
     // rather than what has been used for the sliceOffset
-    if (slice == fittings.size() - 1) {
-        sliceSize += molecules.size() % fittings.size();
+    if (slice == connections.size() - 1) {
+        sliceSize += molecules.size() % connections.size();
     }
 
     unsigned sliceElement = std::rand() % sliceSize; // which index withinin the slice
@@ -83,9 +74,34 @@ Molecule_ptr& Environment::getSlot(unsigned fittingIndex) {
     return molecules.at(sliceOffset + sliceElement);
 }
 
-void Environment::removeFitting(unsigned fittingIndex) {
-    // remove the pointer
-    fittings.erase(fittings.begin() + fittingIndex);
+ConnectionInfo* Environment::getConnectionInfo(unsigned connectionIndex) {
+    ConnectionInfo *out = connections.at(connectionIndex);
+    assert (out->volume == this);
+    return out;
+}
 
-    recalculateFittingIndecies(); // updare indecies
+void Environment::takeControlOf(ConnectionInfo *info) {
+    info->volume = this;
+    info->connectionIndex = connections.size();
+    connections.push_back(info);
+
+    // we can't slice molucules into more slices than its size. Pidgin hole principle
+    assert (connections.size() <= molecules.size());
+
+    recalculateConnectionIndecies();
+}
+
+void Environment::release(unsigned connectionIndex) {
+
+    ConnectionInfo *conn = connections.at(connectionIndex);
+    assert (conn->connectionIndex == connectionIndex);
+    assert (conn->volume == this);
+
+    // safety: erase the pointer to this
+    conn->volume = nullptr;
+
+    // remove the connectionInfor from our list
+    connections.erase(connections.begin() + connectionIndex);
+
+    recalculateConnectionIndecies(); // updare indecies
 }

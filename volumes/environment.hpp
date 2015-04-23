@@ -4,7 +4,7 @@
 
 #include "volume.hpp"
 #include "../molecule.hpp"
-#include "../fitting.hpp"
+#include "../pipe.hpp"
 
 
 // has a finite capacity
@@ -16,15 +16,21 @@ public:
     ~Environment();
 
 
-    const Fitting_ptr& getNewFitting();
 
     // the next two should only be called from fitting
-    Molecule_ptr& getSlot(unsigned fittingIndex);
-    void removeFitting(unsigned fittingIndex);
+    Molecule_ptr& getSlot(unsigned connectionIndex);
+    // void addConnection(ConnectionInfo *info);
+
+    virtual ConnectionInfo* getConnectionInfo(unsigned connectionIndex);
+
+
+    // should only be called by Pipe TODO: enforce this
+    void takeControlOf(ConnectionInfo *info);
+    virtual void release(unsigned connectionIndex);
 
 private:
-    std::vector<Fitting_ptr> fittings;
-    void recalculateFittingIndecies();
+    std::vector<ConnectionInfo *> connections;  // note: we can't get the pipe from this
+    void recalculateConnectionIndecies();
 
     // a random number shared by all fittings. updated each tick.
     unsigned sliceRngResult = 0;

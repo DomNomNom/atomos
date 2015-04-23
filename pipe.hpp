@@ -1,19 +1,33 @@
 #pragma once
 
 // #include "atomos.hpp"
-#include "fitting.hpp"
+// #include "fitting.hpp"
+// #include
+
+class Volume; // forward declaration
+
+
+// stored within a pipe
+typedef struct {
+    unsigned connectionIndex;  // Volume may change this
+    Volume *volume;
+} ConnectionInfo;
+
 
 // Allows molecules to pass from one Fitting to another
 class Pipe {
 public:
-    std::shared_ptr<Fitting> A;
-    std::shared_ptr<Fitting> B;
+    ConnectionInfo A;
+    ConnectionInfo B;
 
-    Pipe(const Fitting_ptr &a, const Fitting_ptr &b);
+    Pipe();
     ~Pipe();
 
     void swapMolecules(); // should only be called by atomos
 
+    // checks whether our fittings are connectec andto point to us
+    void checkConnections();
 private:
-    void checkFittings();  // checks whether our fittings to point to us
 };
+
+
