@@ -129,7 +129,7 @@ void tick() {
 
 
     // do a debug print of the one volume
-    printVolume(simulation_wd*0.5, simulation_ht*0.5);
+    // printVolume(simulation_wd*0.5, simulation_ht*0.5);
 
 
     // draw the pixel data
@@ -173,8 +173,6 @@ int main(int argc, char** argv) {
 
         }
     }
-
-    volumes.at((simulation_ht/2) * simulation_wd + simulation_wd/2)->isSpecial = true;
 
     doTiming("graph creation");
 

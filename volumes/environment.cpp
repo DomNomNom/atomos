@@ -66,10 +66,6 @@ Molecule_ptr& Environment::getSlot(unsigned fittingIndex) {
         // + std::rand()
     ) % fittings.size();
 
-    if (isSpecial) {
-        printf("%d  ", slice);
-    }
-
     // regular slice size
     unsigned sliceSize = molecules.size() / fittings.size();  // note: integer division
 

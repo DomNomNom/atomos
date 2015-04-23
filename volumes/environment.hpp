@@ -22,10 +22,6 @@ public:
     Molecule_ptr& getSlot(unsigned fittingIndex);
     void removeFitting(unsigned fittingIndex);
 
-    // whether we are appliccable for debug output
-    // TODO: remove me
-    bool isSpecial = false;
-
 private:
     std::vector<Fitting_ptr> fittings;
     void recalculateFittingIndecies();
